@@ -1,0 +1,1770 @@
+<!doctype html>
+<html lang="tr" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yapay Zekâ Semineri: Pilot Koltuğunda Siz Varsınız</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --secondary: #06b6d4;
+            --accent: #f43f5e;
+            --bg: #030712;
+            --card: rgba(17, 24, 39, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: #f8fafc;
+            overflow: hidden;
+        }
+
+        .gradient-bg {
+            background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #030712 100%);
+        }
+
+        .slide {
+            height: 100vh;
+            width: 100%;
+            display: none;
+            padding: 6rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                height: auto;
+                min-height: 100vh;
+                padding: 5rem 1rem 6rem;
+                overflow-y: auto;
+            }
+        }
+
+        /* Prevent scrollbar shimmers */
+        * {
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
+
+        *::-webkit-scrollbar {
+            display: none !important;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .glass {
+            background: rgba(17, 24, 39, 0.85);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2rem;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            transform: translateZ(0);
+            /* Hardware acceleration */
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, var(--secondary), var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .system-radar {
+            width: 500px;
+            height: 500px;
+            border: 1px solid rgba(6, 182, 212, 0.1);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+        }
+
+        @media (max-width: 768px) {
+            .system-radar {
+                width: 300px;
+                height: 300px;
+            }
+        }
+
+        .system-radar::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 300px;
+            height: 300px;
+            border: 1px solid rgba(6, 182, 212, 0.05);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .nav-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.3);
+        }
+
+        .person-card {
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .person-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 2rem;
+            border: 2px solid transparent;
+            transition: all 0.4s ease;
+        }
+
+        .person-card:hover::after {
+            border-color: var(--secondary);
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.1);
+        }
+
+        .floating {
+            animation: floating 6s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-15px) rotate(1deg);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+        }
+
+        .code-block {
+            font-family: 'JetBrains Mono', monospace;
+            background: #000;
+            padding: 1.5rem;
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Slide 2 Specific HUD Enhancements */
+        .hud-card {
+            background: rgba(15, 23, 42, 0.4);
+            border-left: 3px solid var(--secondary);
+            transition: all 0.3s ease;
+            border-radius: 0 1.5rem 1.5rem 0;
+        }
+
+        .hud-card:hover {
+            background: rgba(15, 23, 42, 0.8);
+            transform: translateX(8px);
+            border-left-width: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .checklist-item {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .checklist-item::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--secondary);
+            font-weight: bold;
+        }
+
+        .tool-icon {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.1));
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .image-container {
+            width: 100%;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, var(--glow-color, rgba(255, 255, 255, 0.1)) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .glass.group:hover .image-container::before {
+            opacity: 0.4;
+        }
+
+        .glass.group:hover .tool-icon {
+            transform: scale(1.15) translateY(-5px);
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+        }
+
+        .tool-card-content {
+            text-align: center;
+        }
+
+        /* Scanner Animation */
+        .scanner-line {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--secondary);
+            box-shadow: 0 0 15px var(--secondary);
+            animation: scan 3s linear infinite;
+            z-index: 10;
+        }
+
+        @keyframes scan {
+            0% {
+                top: 0%
+            }
+
+            50% {
+                top: 100%
+            }
+
+            100% {
+                top: 0%
+            }
+        }
+
+        .qr-frame {
+            position: relative;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .corner-mark {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-color: var(--secondary);
+            border-style: solid;
+        }
+
+        .top-left {
+            top: -2px;
+            left: -2px;
+            border-width: 3px 0 0 3px;
+            border-radius: 12px 0 0 0;
+        }
+
+        .top-right {
+            top: -2px;
+            right: -2px;
+            border-width: 3px 3px 0 0;
+            border-radius: 0 12px 0 0;
+        }
+
+        .bottom-left {
+            bottom: -2px;
+            left: -2px;
+            border-width: 0 0 3px 3px;
+            border-radius: 0 0 0 12px;
+        }
+
+        .bottom-right {
+            bottom: -2px;
+            right: -2px;
+            border-width: 0 3px 3px 0;
+            border-radius: 0 0 12px 0;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 2rem;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.6rem 1.6rem;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            animation: footerSlideUp 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        .footer:hover {
+            transform: translateY(-5px);
+            background: rgba(15, 23, 42, 0.9);
+            border-color: var(--secondary);
+            box-shadow: 0 15px 40px rgba(6, 182, 212, 0.2);
+        }
+
+        @keyframes footerSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .footer {
+                right: 50%;
+                transform: translateX(50%);
+                bottom: 1rem;
+                width: calc(100% - 2rem);
+                justify-content: center;
+            }
+
+            .footer:hover {
+                transform: translateX(50%) translateY(-2px);
+            }
+
+            nav {
+                padding: 0.5rem 1rem !important;
+            }
+
+            .nav-logo-text {
+                display: none;
+            }
+        }
+
+        .footer-photo {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--secondary);
+            object-fit: cover;
+            padding: 2px;
+            background: rgba(6, 182, 212, 0.1);
+            transition: all 0.5s ease;
+        }
+
+        .footer:hover .footer-photo {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .footer-text {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #f1f5f9;
+            white-space: nowrap;
+        }
+
+        .footer-name {
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 30%, var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-right: 0.2rem;
+        }
+    </style>
+</head>
+
+<body class="gradient-bg h-full">
+    <!-- Footer -->
+    <div class="footer group">
+        <img src="photo/mehmet.jpg" alt="Mehmet Kıvrak" class="footer-photo">
+        <div class="footer-text">
+            <span class="footer-name">Mehmet Kıvrak</span> Full Stack Developer
+        </div>
+    </div>
+    <!-- Header/Nav -->
+    <nav
+        class="fixed top-0 left-0 right-0 z-50 px-8 py-4 flex justify-between items-center bg-black/20 backdrop-blur-md border-b border-white/5">
+        <div class="flex items-center gap-3">
+            <div
+                class="w-8 h-8 bg-gradient-to-br from-purple-500 to-cyan-500 rounded-lg flex items-center justify-center font-bold">
+                A</div>
+            <span class="font-bold text-lg tracking-tight nav-logo-text">Yapay Zekâ</span>
+        </div>
+        <div class="flex items-center gap-6">
+            <div class="text-xs font-medium text-gray-400">
+                <span id="current-slide">1</span> / <span id="total-slides">18</span>
+            </div>
+            <div class="flex gap-2">
+                <button id="prevBtn"
+                    class="nav-btn glass px-4 py-2 text-sm font-semibold hover:bg-white/10 opacity-50">← Geri</button>
+                <button id="nextBtn"
+                    class="nav-btn bg-gradient-to-r from-purple-600 to-cyan-600 px-6 py-2 rounded-full text-sm font-bold">İleri
+                    →</button>
+            </div>
+        </div>
+    </nav>
+
+    <main id="slides-container" class="h-full">
+        <!-- Slide 1: Welcome -->
+        <section class="slide active" data-index="1">
+            <div class="flex-1 flex flex-col items-center justify-center text-center max-w-5xl mx-auto relative z-10">
+                <!-- Top Logos Row -->
+                <div class="flex items-center justify-center gap-6 md:gap-12 mb-8 md:mb-12">
+                    <div class="glass p-4 md:p-6 w-32 h-32 md:w-52 md:h-52 flex items-center justify-center floating"
+                        style="animation-delay: -2s;">
+                        <img src="photo/myo.png" alt="MYO Logo" class="max-w-full max-h-full object-contain">
+                    </div>
+                    <div class="glass p-4 md:p-6 w-32 h-32 md:w-52 md:h-52 flex items-center justify-center floating">
+                        <img src="photo/XRLAB.MCBU - 2.png" alt="XRLAB Logo"
+                            class="max-w-full max-h-full object-contain">
+                    </div>
+                </div>
+
+                <div
+                    class="mb-4 inline-block px-4 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-bold tracking-wider uppercase">
+                    Geleceğin Yazılım Dünyası
+                </div>
+                <h1 class="text-6xl md:text-8xl font-extrabold mb-8 tracking-tighter leading-none">
+                    Yapay Zekâ Bir Otopilot, <br>
+                    <span class="text-gradient">Pilot Sizsiniz.</span>
+                </h1>
+                <p class="text-xl text-gray-400 max-w-2xl mb-12 leading-relaxed">
+                    Yapay zekâ sektörü değiştiriyor, hız kazandırıyor ama rota hala gerçek bir "Pilot"un (sizin) elinde
+                    olmalı.
+                </p>
+                <div class="flex gap-8 items-center text-sm text-gray-500">
+                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-green-500"></span> Live
+                        Demo</div>
+                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span> 60
+                        Dakika</div>
+                    <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                        İnteraktif</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 2: Basit vs Detaylı Prompt -->
+        <section class="slide" data-index="2">
+            <div class="max-w-7xl mx-auto h-full flex flex-col justify-center py-6">
+                <div class="text-center mb-12">
+                    <div class="badge text-secondary mb-4">Prompt Mühendisliği</div>
+                    <h2 class="text-5xl font-extrabold mb-4 text-gradient uppercase tracking-tight">Basit vs Detaylı
+                        Prompt</h2>
+                    <p class="text-gray-400 text-lg">Yapay zekâdan en iyi verimi almak için talimatın gücü.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-10">
+                    <!-- Basic Prompt Case -->
+                    <div
+                        class="glass p-8 border-red-500/10 hover:border-red-500/30 transition-all flex flex-col h-full bg-black/40">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center text-xl">❌
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-red-400">Basit Prompt</h3>
+                                <p class="text-xs text-gray-500">"Sıradan bir talimat"</p>
+                            </div>
+                        </div>
+                        <div class="code-block bg-black/80 mb-6 border border-white/5">
+                            <div class="text-xs text-blue-400 font-mono mb-2">// User</div>
+                            <div class="text-gray-300 font-mono text-sm">"Login sayfası kodu yaz."</div>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-[11px] text-gray-500 uppercase tracking-widest mb-3">Çıktı (AI Response)</p>
+                            <div
+                                class="p-4 bg-red-500/5 rounded-xl border border-red-500/10 text-gray-400 font-mono text-xs overflow-hidden">
+                                <span class="text-blue-300">&lt;form&gt;</span><br>
+                                &nbsp;&nbsp;<span class="text-blue-300">&lt;input</span> type="text"<span
+                                    class="text-blue-300">&gt;</span><br>
+                                &nbsp;&nbsp;<span class="text-blue-300">&lt;button&gt;</span>Giriş<span
+                                    class="text-blue-300">&lt;/button&gt;</span><br>
+                                <span class="text-blue-300">&lt;/form&gt;</span>
+                                <div class="mt-4 text-[10px] text-red-500/60 italic">// Çok basit, stil yok, güvenlik
+                                    yok.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Prompt Case -->
+                    <div
+                        class="glass p-8 border-emerald-500/10 hover:border-emerald-500/30 transition-all flex flex-col h-full bg-black/40">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div
+                                class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center text-xl">
+                                ✅</div>
+                            <div>
+                                <h3 class="text-xl font-bold text-emerald-400">Detaylı Prompt</h3>
+                                <p class="text-xs text-gray-500">"Profesyonel Mühendislik"</p>
+                            </div>
+                        </div>
+                        <div class="code-block bg-black/80 mb-6 border border-white/5">
+                            <div class="text-xs text-blue-400 font-mono mb-2">// Pilot</div>
+                            <div class="text-gray-300 font-mono text-xs leading-relaxed">
+                                "React ve Tailwind CSS kullanarak; responsive, karanlık mod destekli, Yup ile form
+                                doğrulaması (validation) yapılmış, modern bir login bileşeni hazırla. Tasarımda
+                                glassmorphism esintileri olsun."
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-[11px] text-gray-500 uppercase tracking-widest mb-3">Çıktı (AI Response)</p>
+                            <div
+                                class="p-4 bg-emerald-500/5 rounded-xl border border-emerald-500/10 text-gray-300 font-mono text-[10px] overflow-hidden">
+                                <span class="text-purple-400 italic">import</span> React <span
+                                    class="text-purple-400 italic">from</span> <span
+                                    class="text-emerald-300">'react'</span>;<br>
+                                <span class="text-gray-500">// ... validation hooks & UI logic</span><br>
+                                <span class="text-blue-400 font-bold">const</span> Login = () =&gt; (<br>
+                                &nbsp;&nbsp;<span class="text-blue-300">&lt;div</span> className=<span
+                                    class="text-emerald-300">"bg-white/10 backdrop-blur-md rounded-2xl p-8"</span><span
+                                    class="text-blue-300">&gt;</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-gray-500">// Responsive, validated and styled
+                                    input fields</span><br>
+                                &nbsp;&nbsp;<span class="text-blue-300">&lt;/div&gt;</span><br>
+                                );
+                                <div
+                                    class="mt-4 text-[10px] text-emerald-500 font-bold italic tracking-wider uppercase">
+                                    READY-TO-USE / HIGH QUALITY ENGINE</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Sustainability & Awareness -->
+        <section class="slide" data-index="3">
+            <div class="max-w-7xl mx-auto h-full flex flex-col justify-center py-6">
+                <div class="grid md:grid-cols-2 gap-16 items-center h-full">
+                    <!-- Left: Large Vertical Stacked Images -->
+                    <div class="flex flex-col gap-6 h-full justify-center relative">
+                        <div class="absolute -inset-20 bg-cyan-500/10 blur-[120px] -z-10"></div>
+
+                        <div
+                            class="glass p-3 border-cyan-500/20 group hover:scale-[1.01] transition-all duration-700 shadow-2xl bg-black/40 flex-1 min-h-0 flex items-center justify-center overflow-hidden">
+                            <img src="photo/ge.png" alt="Doğa Bilinci 1"
+                                class="w-full h-full object-contain rounded-2xl">
+                        </div>
+
+                        <div
+                            class="glass p-3 border-cyan-500/20 group hover:scale-[1.01] transition-all duration-700 shadow-2xl bg-black/40 flex-1 min-h-0 flex items-center justify-center overflow-hidden">
+                            <img src="photo/ge1.png" alt="Doğa Bilinci 2"
+                                class="w-full h-full object-contain rounded-2xl">
+                        </div>
+                    </div>
+
+                    <!-- Right: Content -->
+                    <div class="space-y-8">
+                        <div>
+                            <div
+                                class="badge text-cyan-400 border-cyan-500/20 mb-4 font-bold uppercase tracking-widest px-4 py-1">
+                                Mission: Preservation</div>
+                            <h2
+                                class="text-4xl md:text-7xl font-black tracking-tighter uppercase leading-tight md:leading-[0.85] mb-4">
+                                Gelecek İçin <br>
+                                <span class="text-cyan-400">Verimli AI.</span>
+                            </h2>
+                        </div>
+
+                        <div class="glass p-8 border-cyan-500/10 relative overflow-hidden group bg-white/[0.02]">
+                            <div
+                                class="absolute top-0 left-0 w-1 h-full bg-cyan-500 shadow-[0_0_15px_rgba(6,182,212,0.5)]">
+                            </div>
+                            <p class="text-2xl text-gray-200 leading-relaxed font-extrabold mb-4 relative z-10 italic">
+                                "Suyu israf etmeyelim, dünyayı koruyalım."
+                            </p>
+                            <div class="space-y-4 text-gray-400 text-sm leading-relaxed relative z-10">
+                                <p>Her yapay zekâ sorgusu sadece işlem gücü değil, aynı zamanda soğutma için litrelerce
+                                    saf su demektir.</p>
+                                <p>Yapay zekâyı bilinçli ve sadece ihtiyaç anında kullanarak dijital ayak izimizi
+                                    minimuma indirelim.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-6">
+                            <div
+                                class="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-3xl animate-bounce">
+                                💧</div>
+                            <div class="flex-1 space-y-2">
+                                <div class="text-[10px] font-black text-cyan-500 uppercase tracking-[0.4em]">Resource
+                                    Consumption</div>
+                                <div class="h-1.5 w-full bg-gray-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-cyan-500 w-3/4 animate-pulse"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Simple Algorithm Examples -->
+        <section class="slide" data-index="4">
+            <div class="max-w-6xl mx-auto h-full flex flex-col justify-center">
+                <div class="text-center mb-16">
+                    <div class="badge text-secondary mb-4">Temel Kavramlar</div>
+                    <h2 class="text-5xl font-extrabold mb-4 text-gradient uppercase tracking-tight">Algoritma Nedir?
+                    </h2>
+                    <p class="text-gray-400 text-lg">Bir problemi çözmek için izlenen adım adım yol haritasıdır.</p>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-10">
+                    <!-- Example 1 -->
+                    <div
+                        class="glass p-10 relative overflow-hidden group hover:bg-white/[0.05] transition-all border-amber-500/10 hover:border-amber-500/30">
+                        <div class="flex items-center gap-5 mb-8">
+                            <div
+                                class="w-16 h-16 rounded-2xl bg-amber-500/20 flex items-center justify-center text-4xl shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+                                ☕</div>
+                            <h3 class="text-2xl font-bold">Örnek:<br>Çay Demlemek</h3>
+                        </div>
+                        <div class="space-y-4 font-mono text-lg leading-relaxed">
+                            <div
+                                class="flex items-center gap-3 text-gray-400 group-hover:text-amber-200/70 transition-colors">
+                                <span class="text-amber-500 font-bold">01.</span> Su kaynat.
+                            </div>
+                            <div
+                                class="flex items-center gap-3 text-gray-400 group-hover:text-amber-200/70 transition-colors">
+                                <span class="text-amber-500 font-bold">02.</span> Çayı ekle.
+                            </div>
+                            <div
+                                class="flex items-center gap-3 text-gray-400 group-hover:text-amber-200/70 transition-colors">
+                                <span class="text-amber-500 font-bold">03.</span> Suyu dök.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Example 2 -->
+                    <div
+                        class="glass p-10 relative overflow-hidden group hover:bg-white/[0.05] transition-all border-emerald-500/10 hover:border-emerald-500/30">
+                        <div class="flex items-center gap-5 mb-8">
+                            <div
+                                class="w-16 h-16 rounded-2xl bg-emerald-500/20 flex items-center justify-center text-4xl shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+                                🚦</div>
+                            <h3 class="text-2xl font-bold">Örnek:<br>Trafik Işığı</h3>
+                        </div>
+                        <div class="space-y-4 font-mono text-lg leading-relaxed text-gray-400">
+                            <div class="flex items-center gap-3 group-hover:text-emerald-200/70 transition-colors">
+                                <span class="text-emerald-500 font-bold">01.</span> Işığı gör.
+                            </div>
+                            <div class="flex items-center gap-3 group-hover:text-emerald-200/70 transition-colors">
+                                <span class="text-red-400 font-bold">Red</span> ise: Dur.
+                            </div>
+                            <div class="flex items-center gap-3 group-hover:text-emerald-200/70 transition-colors">
+                                <span class="text-emerald-400 font-bold">Green</span> ise: Geç.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Example 3: Simple Code Block -->
+                    <div
+                        class="glass p-10 relative overflow-hidden group hover:bg-white/[0.05] transition-all border-blue-500/10 hover:border-blue-500/30">
+                        <div class="flex items-center gap-5 mb-8">
+                            <div
+                                class="w-16 h-16 rounded-2xl bg-blue-500/20 flex items-center justify-center text-4xl shadow-[0_0_20px_rgba(59,130,246,0.2)]">
+                                💻</div>
+                            <h3 class="text-2xl font-bold">Örnek:<br>Kod Dünyası</h3>
+                        </div>
+                        <div
+                            class="p-6 bg-black/60 rounded-2xl font-mono text-[15px] leading-relaxed border border-white/5 group-hover:border-blue-500/30 transition-all">
+                            <div class="text-purple-400">if</div> (hava == <span
+                                class="text-emerald-400">"yağmurlu"</span>) {<br>
+                            &nbsp;&nbsp;al(<span class="text-amber-400">"şemsiye"</span>);<br>
+                            } <div class="text-purple-400 inline">else</div> {<br>
+                            &nbsp;&nbsp;al(<span class="text-amber-400">"gözlük"</span>);<br>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-12 text-center">
+                    <p class="text-gray-500 italic">"Algoritma, dijital dünyanın yemek tarifidir."</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Mission Objective (Lab) -->
+        <section class="slide" data-index="5">
+            <div class="max-w-6xl mx-auto h-full flex flex-col md:flex-row items-center gap-20">
+                <!-- Left Side: QR & High-Tech Frame -->
+                <div class="flex-1 flex justify-center items-center relative">
+                    <div class="absolute -inset-20 bg-secondary/5 rounded-full blur-[80px] -z-10"></div>
+
+                    <div class="qr-frame group">
+                        <!-- Tech Corners -->
+                        <div class="corner-mark top-left"></div>
+                        <div class="corner-mark top-right"></div>
+                        <div class="corner-mark bottom-left"></div>
+                        <div class="corner-mark bottom-right"></div>
+
+                        <div
+                            class="w-80 h-80 bg-white rounded-[2rem] p-8 shadow-[0_0_50px_rgba(6,182,212,0.2)] relative overflow-hidden text-center">
+                            <!-- Static Noise Overlay (Subtle) -->
+                            <div
+                                class="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]">
+                            </div>
+
+                            <!-- The QR Image -->
+                            <div class="w-full h-full flex items-center justify-center relative z-0">
+                                <img src="photo/download.svg" alt="Challenge QR" class="w-full h-full object-contain">
+                            </div>
+                        </div>
+
+                        <!-- Status Badge Below QR -->
+                        <div
+                            class="absolute -bottom-6 left-1/2 -translate-x-1/2 glass px-6 py-2 border-secondary/30 flex items-center gap-3">
+                            <span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span>
+                            <span class="text-[10px] font-black uppercase tracking-widest text-secondary">Bağlantıya
+                                Hazır</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side: Content -->
+                <div class="flex-1">
+                    <div class="inline-flex items-center gap-3 mb-6">
+                        <div class="badge text-accent border-accent/20">Uygulama 01</div>
+                        <div class="w-12 h-[1px] bg-white/10"></div>
+                        <div class="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Protocol: Start
+                        </div>
+                    </div>
+
+                    <h2 class="text-7xl font-black mb-8 leading-[0.9] uppercase tracking-tighter">
+                        Haydi <br>
+                        <span class="text-gradient">Başlayalım.</span>
+                    </h2>
+
+                    <p class="text-xl text-gray-400 mb-10 leading-relaxed font-medium">
+                        QR kodu okutun ve diğerleriyle aynı anda yarışa katılın. Bakalım kim daha hızlı ve doğru
+                        algoritma kuracak?
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-4 mb-10">
+                        <div class="glass p-4 border-white/5">
+                            <div class="text-[10px] text-secondary font-black uppercase mb-1">Hedef</div>
+                            <div class="text-sm font-bold uppercase tracking-tight">Canlı Rekabet</div>
+                        </div>
+                        <div class="glass p-4 border-white/5">
+                            <div class="text-[10px] text-purple-400 font-black uppercase mb-1">Eylem</div>
+                            <div class="text-sm font-bold uppercase tracking-tight">Anlık Yarış</div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3">
+                        <span class="glass px-5 py-2 text-xs font-mono text-cyan-400/70 border-cyan-400/10">SCAN ->
+                            OPEN</span>
+                        <span class="glass px-5 py-2 text-xs font-mono text-purple-400/70 border-purple-400/10">CODE
+                            ->
+                            RUN</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Pilot's Essential Systems -->
+        <section class="slide" data-index="6">
+            <div class="max-w-6xl mx-auto h-full flex flex-col justify-center relative overflow-hidden">
+                <div class="system-radar"></div>
+                <div class="text-center mb-16">
+                    <div class="badge text-secondary mb-4">Mühendislik Temeli</div>
+                    <h2 class="text-5xl font-extrabold mb-4 text-gradient uppercase tracking-tight">Yazılımcıların
+                        Eğitim Gücü</h2>
+                    <p class="text-gray-400 text-lg">Aldığınız eğitim, AI'nın "ne" olduğunu bildiği yerde sizin "neden"
+                        sorusuna cevap vererek kontrolü ele almanızı sağlar.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-6 relative z-10">
+                    <div class="glass p-8 text-center hover:scale-105 transition-all group">
+                        <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🧠</div>
+                        <h4 class="font-bold text-sm mb-2">Algoritma</h4>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-widest">Logic Engine</p>
+                    </div>
+                    <div class="glass p-8 text-center hover:scale-105 transition-all group border-secondary/20">
+                        <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🗄️</div>
+                        <h4 class="font-bold text-sm mb-2 border-b border-white/5 pb-2">Veri Tabanı</h4>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-widest">Storage System</p>
+                    </div>
+                    <div class="glass p-8 text-center hover:scale-105 transition-all group">
+                        <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">✨</div>
+                        <h4 class="font-bold text-sm mb-2">Temiz Kod</h4>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-widest">Quality Control</p>
+                    </div>
+                    <div class="glass p-8 text-center hover:scale-105 transition-all group">
+                        <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🎨</div>
+                        <h4 class="font-bold text-sm mb-2">Modern UI</h4>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-widest">User Interface</p>
+                    </div>
+                    <div class="glass p-8 text-center hover:scale-105 transition-all group border-red-500/10">
+                        <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🛡️</div>
+                        <h4 class="font-bold text-sm mb-2">Güvenlik</h4>
+                        <p class="text-[10px] text-gray-500 uppercase tracking-widest">Shield Active</p>
+                    </div>
+                </div>
+
+                <div class="mt-12 flex justify-center">
+                    <div class="glass px-10 py-4 border-dashed border-white/20">
+                        <p class="italic text-gray-300 text-lg">"Otopilot <b>'ne'</b> yapılacağını bilir, Pilot
+                            <b>'neden'</b> yapılması gerektiğini."
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 4: Meet the Pilots -->
+        <section class="slide" data-index="7">
+            <div
+                class="flex-1 flex flex-col items-center justify-center text-center max-w-5xl mx-auto relative overflow-hidden">
+                <div
+                    class="absolute inset-0 flex items-center justify-center opacity-[0.02] pointer-events-none select-none">
+                    <h2 class="text-[30rem] font-black">CREW</h2>
+                </div>
+                <div class="badge text-secondary mb-6 px-6 py-2">Mission Personnel</div>
+                <h2 class="text-7xl md:text-9xl font-black mb-8 tracking-tighter leading-none uppercase">
+                    Yazılımın <br>
+                    <span class="text-gradient">Yeni Pilotları.</span>
+                </h2>
+                <p class="text-2xl text-gray-400 max-w-2xl mb-12 leading-relaxed font-medium">
+                    Yapay zekâyı usta bir otopilot olarak kullanan, dijital sınırları zorlayan ekibimiz.
+                </p>
+                <div class="w-24 h-1 bg-gradient-to-r from-transparent via-secondary to-transparent"></div>
+            </div>
+        </section>
+
+        <!-- Slide 5: Ümit & Eren -->
+        <section class="slide" data-index="8">
+            <div class="max-w-7xl mx-auto h-full flex flex-col justify-center py-6">
+                <!-- Top Section -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-10 mb-8">
+                    <div class="flex items-center gap-6">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center text-2xl font-bold shadow-lg shadow-amber-500/20">
+                            E</div>
+                        <div>
+                            <h2 class="text-4xl font-extrabold uppercase tracking-tight leading-none mb-1">Eren Ata</h2>
+                            <p class="text-amber-400 font-semibold text-sm">AI Research & Data Architecture</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-950/90 flex-1 max-w-3xl p-5 border border-white/10 rounded-2xl shadow-xl">
+                        <p class="text-sm text-gray-300 leading-relaxed italic">
+                            "Yapay zekâ sınırsız bir veri kütüphanesi; biz bu kütüphanenin mimarlarıyız. Kodun hızı
+                            değil, verinin doğruluğu esastır."
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Bottom Section: Content & Visuals -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 flex-1 min-h-0">
+                    <!-- Text Content -->
+                    <div class="flex flex-col gap-4 overflow-hidden">
+                        <div
+                            class="bg-gray-950/90 p-6 rounded-3xl border border-white/10 shadow-2xl overflow-y-auto custom-scrollbar">
+                            <h4 class="text-amber-400 font-bold uppercase text-xs tracking-widest mb-4">Veri Analizi &
+                                Model Optimizasyonu</h4>
+                            <div class="space-y-6 text-[13px]">
+                                <div>
+                                    <h5 class="text-amber-300 font-bold mb-1">Veri Analizi ve Karar Destek Otomasyonu
+                                    </h5>
+                                    <p class="text-gray-300 leading-relaxed">
+                                        Büyük ölçekli karmaşık metinleri, raporları veya doküman yığınlarını analiz edip
+                                        sınıflandıran, anlık veri akışı yoğun sahalarda hızlı karar desteği sağlayan AI
+                                        asistanları kurgulamak.
+                                    </p>
+                                </div>
+
+                                <div class="bg-amber-500/5 p-4 rounded-xl border border-amber-500/20">
+                                    <h5 class="text-amber-300 font-bold mb-1">Sektörel İhtiyaçlar (Fine-Tuning)</h5>
+                                    <p class="text-gray-300 leading-relaxed">
+                                        Temel dil modellerini uzmanlık alanlarının veri setleriyle eğiterek teknik
+                                        jargona hakim, odaklı sistemler yaratmak.
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <h5 class="text-amber-300 font-bold mb-1">Sistem Performansı ve Maliyet</h5>
+                                    <p class="text-gray-300 leading-relaxed">
+                                        Otonom AI ajanlarının donanım sınırlarını test etmek ve büyük ölçekli
+                                        mimarilerde darboğaz analizleri yapmak.
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <h5 class="text-amber-300 font-bold mb-1">Model Davranışları ve Araştırma</h5>
+                                    <p class="text-gray-300 leading-relaxed">
+                                        Yüksek sıcaklık (high-temperature) parametreleriyle halüsinasyon eğilimlerini ve
+                                        veri bağlantılarını haritalandırmak.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Section: Showcase -->
+                    <div class="flex flex-col gap-4 min-h-0 overflow-hidden">
+                        <div
+                            class="bg-gray-950/90 p-3 rounded-2xl group border border-white/10 hover:border-amber-500/30 transition-all flex items-center justify-center bg-black/40 flex-1 min-h-0">
+                            <img src="photo/eren/s.png" alt="Data Analytics Interface"
+                                class="w-full h-full object-contain rounded-xl group-hover:scale-[1.01] transition-transform duration-700">
+                        </div>
+                        <div
+                            class="bg-gray-950/90 p-3 rounded-2xl group border border-white/10 hover:border-amber-500/30 transition-all flex items-center justify-center bg-black/40 flex-1 min-h-0">
+                            <img src="photo/eren/asa.png" alt="Model Performance Analysis"
+                                class="w-full h-full object-contain rounded-xl group-hover:scale-[1.01] transition-transform duration-700">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 8: Ümit -->
+        <section class="slide" data-index="9">
+            <div class="max-w-7xl mx-auto h-full flex flex-col justify-center py-6">
+                <!-- Top Section -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-10 mb-8">
+                    <div class="flex items-center gap-6">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-2xl font-bold shadow-lg shadow-indigo-500/20">
+                            Ü</div>
+                        <div>
+                            <h2 class="text-4xl font-extrabold uppercase tracking-tight leading-none mb-1">Ümit
+                                Selahattin Momoçoğlu</h2>
+                            <p class="text-indigo-400 font-semibold text-sm">VR Developer & Physics Optimization</p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-950/90 flex-1 max-w-3xl p-5 border border-white/10 rounded-2xl shadow-xl">
+                        <p class="text-sm text-gray-300 leading-relaxed italic">
+                            "VR'da fizik sorunlarını çözmek, bir pilotun fırtınalı havada rotasını bulması gibidir. AI
+                            burada bizim en büyük navigasyon aracımız."
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Bottom Section -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 flex-1 min-h-0">
+                    <div class="flex flex-col gap-4">
+                        <div class="bg-gray-950/90 p-8 rounded-3xl border border-white/10 shadow-2xl h-full">
+                            <h4 class="text-indigo-400 font-bold uppercase text-xs tracking-widest mb-6">VR Fizik Sorunu
+                                & AI Çözümü</h4>
+                            <div class="space-y-6 text-[14px]">
+                                <div class="bg-red-500/5 p-4 rounded-xl border border-red-500/20">
+                                    <h5 class="text-red-400 font-bold mb-2 flex items-center gap-2"><span>⚠️</span>
+                                        Sorun Senaryosu</h5>
+                                    <p class="text-gray-300">Objeyi tutarken VR'da fizik bozulması yaşanması ve objenin
+                                        elde titremesi.</p>
+                                </div>
+                                <div class="bg-indigo-500/5 p-4 rounded-xl border border-indigo-500/20">
+                                    <h5 class="text-indigo-400 font-bold mb-2 flex items-center gap-2"><span>🔍</span>
+                                        Analiz & Kontrol</h5>
+                                    <p class="text-gray-300">Öncelikle collider çakışmalarını ve el ile obje arasındaki
+                                        etkileşimi detaylıca analiz ettim.</p>
+                                </div>
+                                <div class="bg-green-500/5 p-4 rounded-xl border border-green-500/20">
+                                    <h5 class="text-green-400 font-bold mb-2 flex items-center gap-2"><span>✅</span> AI
+                                        Destekli Çözüm</h5>
+                                    <p class="text-gray-300">Yapay zekanın yönlendirmesiyle Transform üzerinden pozisyon
+                                        atayarak çakışmaları engelledim ve kod tarafında tutma ayarlarını optimize
+                                        ettim.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Visual Section: High-Tech Placeholder -->
+                    <div class="flex flex-col gap-4">
+                        <div
+                            class="glass p-3 rounded-2xl group border-white/5 hover:border-indigo-500/30 transition-all flex items-center justify-center bg-black/40 flex-1 min-h-0">
+                            <div class="text-center p-8">
+                                <div class="text-6xl mb-4 opacity-40 animate-pulse">🥽</div>
+                                <p class="text-gray-400 font-bold uppercase text-xs tracking-widest mb-2">VR Interaction
+                                    Case</p>
+                                <p class="text-[11px] text-gray-500 italic max-w-xs mx-auto">AI-assisted debugging for
+                                    realistic object interaction and jitter-free physics.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 9: Kerem -->
+        <section class="slide" data-index="10">
+            <div class="max-w-7xl mx-auto h-full flex flex-col justify-center py-6">
+                <!-- Top Section: Name and Intro -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-10 mb-8">
+                    <div class="flex items-center gap-6">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-2xl font-bold shadow-lg shadow-cyan-500/20">
+                            K</div>
+                        <div>
+                            <h2 class="text-4xl font-extrabold uppercase tracking-tight leading-none mb-1">Kerem Işık
+                            </h2>
+                            <p class="text-cyan-400 font-semibold text-sm">Cybersecurity Specialist</p>
+                        </div>
+                    </div>
+
+                    <div class="glass flex-1 max-w-3xl p-5 bg-white/[0.02]">
+                        <p class="text-sm text-gray-300 leading-relaxed italic">
+                            "Yapay zeka, siber güvenliğin yeni 'Otopilot'u. Biz pilotlar ise bu gücü doğru yöne kanalize
+                            edenleriz."
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Bottom Section: Content & Visuals -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 flex-1 min-h-0">
+                    <!-- Text Content -->
+                    <div class="flex flex-col gap-4">
+                        <div class="bg-gray-950/90 p-8 rounded-3xl border border-white/10 shadow-2xl">
+                            <h4 class="text-cyan-400 font-bold uppercase text-xs tracking-widest mb-4">Siber Güvenlik
+                                Odaklı Yapay Zekâ: CypherMindLLM</h4>
+                            <div class="space-y-4 text-[13px]">
+                                <p class="text-gray-300 leading-relaxed">
+                                    <b>CaptureTheFlag-CypherMindLLM</b>, Llama-3.1-8B tabanlı ve özellikle siber
+                                    güvenlik ile CTF (Capture The Flag) yarışmaları için özelleştirilmiş bir yapay zekâ
+                                    modelidir. <b>Eren Ata ve Kerem Işık</b> tarafından geliştirilen bu model, CTF
+                                    çözümleri, zafiyet analizleri ve güvenlik dokümanlarıyla eğitilerek karmaşık saldırı
+                                    senaryolarını anlama ve çözüm üretme yeteneği kazanmıştır.
+                                </p>
+                                <p class="text-gray-300 leading-relaxed">
+                                    <b>GGUF (Q6_K)</b> formatında sunulması sayesinde, standart bilgisayarlarda hem CPU
+                                    hem de GPU üzerinde yüksek verimle çalışabilir. Özetle; sızma testi, kod analizi ve
+                                    dijital adli tıp gibi konularda Türkçe ve İngilizce destek sunan, kompakt ve
+                                    uzmanlaşmış bir dijital güvenlik asistanıdır.
+                                </p>
+
+                                <div class="bg-cyan-500/10 p-5 rounded-xl border border-cyan-500/20">
+                                    <h5 class="text-cyan-300 font-bold mb-2">Başarım ve Verimlilik</h5>
+                                    <p class="text-gray-300 mb-3 text-[12px]">
+                                        Model, Q6_K kuantizasyonu sayesinde orijinal zekasını <b>%99 oranında</b>
+                                        koruyarak düşük donanımlarda bile yüksek doğrulukla çalışır.
+                                    </p>
+                                    <p class="text-gray-300 text-[12px] leading-relaxed">
+                                        Genel amaçlı modellere kıyasla; CTF, tersine mühendislik ve zafiyet analizi
+                                        testlerinde kendi sıkletindeki (8B) modellerin üzerinde bir performans sergiler.
+                                        8 milyar parametre sınıfının en verimli örneklerinden biridir.
+                                    </p>
+                                </div>
+                                <p class="text-[12px] text-gray-400 leading-relaxed">
+                                    Özetle; devasa modellerin (GPT-4 vb.) ulaştığı geniş bilgi havuzuna sahip olmasa da,
+                                    özel güvenlik görevlerinde ve mantık yürütme isabetinde oldukça yetkindir.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Section: Showcase -->
+                    <div class="flex flex-col gap-4 min-h-0 overflow-hidden">
+
+                        <div
+                            class="glass p-3 rounded-2xl group border-white/5 hover:border-cyan-500/30 transition-all flex items-center justify-center bg-black/40">
+                            <img src="photo/kerem/a.jpeg" alt="CypherMindLLM Details"
+                                class="w-full h-auto object-contain rounded-xl group-hover:scale-[1.01] transition-transform duration-700">
+                        </div>
+                        <div
+                            class="glass p-3 rounded-2xl group border-white/5 hover:border-cyan-500/30 transition-all flex items-center justify-center bg-black/40">
+                            <img src="photo/kerem/aaa.jpeg" alt="CypherMindLLM Top View"
+                                class="w-full h-auto object-contain rounded-xl group-hover:scale-[1.01] transition-transform duration-700">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- Slide 11: İlker -->
+        <section class="slide overflow-hidden" data-index="11">
+            <div class="max-w-7xl mx-auto h-full flex flex-col justify-center py-6">
+                <!-- Top Section: Name and Intro -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-10 mb-8">
+                    <div class="flex items-center gap-6">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-2xl font-bold shadow-lg shadow-emerald-500/20">
+                            İ</div>
+                        <div>
+                            <h2 class="text-4xl font-extrabold uppercase tracking-tight leading-none mb-1">İlker Kayır
+                            </h2>
+                            <p class="text-emerald-400 font-semibold text-sm">Game Developer & AI Logic</p>
+                        </div>
+                    </div>
+
+                    <div class="glass flex-1 max-w-3xl p-5 bg-white/[0.02]">
+                        <p class="text-sm text-gray-300 leading-relaxed italic">
+                            "Yapay zeka manuel sınırları ortadan kaldırır. Bize sadece hayal etmek kalır."
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Bottom Section: Content & Visuals -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 flex-1 min-h-0">
+                    <!-- Text Content -->
+                    <div class="flex flex-col gap-4 justify-center">
+                        <div class="bg-gray-950/90 p-8 rounded-3xl border border-white/10 shadow-2xl">
+                            <h4 class="text-emerald-400 font-bold uppercase text-xs tracking-widest mb-4">Oyun
+                                Dünyasında AI Karakterler</h4>
+                            <div class="space-y-4 text-sm">
+                                <p class="text-gray-300 leading-relaxed">
+                                    Bugün size kendi geliştirdiğim bir oyun üzerinden, yapay zekanın karakterleri nasıl
+                                    canlandırdığını anlatacağım. Ekranda gördüğünüz karakterler, temel bir mesafe
+                                    fonksiyonu ile çalışıyor: <code
+                                        class="bg-emerald-500/20 px-1 rounded text-emerald-300">"Oyuncu sana yaklaşırsa takip et."</code>
+                                </p>
+                                <p class="text-gray-300 leading-relaxed">
+                                    Peki ya <b>gerçek bir AI sistemi</b> girseydi? Oyun yaşayan bir ekosisteme
+                                    dönüşürdü. Botlar devriye gezebilir, pusu kurabilir ve engelleri otomatik
+                                    aşabilirdi.
+                                </p>
+                                <div class="bg-emerald-500/10 p-4 rounded-xl border border-emerald-500/20">
+                                    <h5 class="text-emerald-300 font-bold mb-2">Gelişmiş Algoritmalar:</h5>
+                                    <ul class="space-y-2 list-none">
+                                        <li><span class="text-emerald-400 font-bold">A* Algoritması:</span> Engellere
+                                            takılmadan en kısa yolu bulma.</li>
+                                        <li><span class="text-emerald-400 font-bold">Sonlu Durum Makineleri:</span>
+                                            Karakterin 'ruh halini' belirleme.</li>
+                                        <li><span class="text-emerald-400 font-bold">NavMesh Teknolojisi:</span> Oyun
+                                            alanını botlara tanıtma.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Section: Game Screenshots -->
+                    <div class="flex flex-col gap-4 min-h-0 overflow-hidden">
+                        <div
+                            class="glass p-3 rounded-2xl group border-white/5 hover:border-emerald-500/30 transition-all flex items-center justify-center bg-black/40 flex-1 min-h-0">
+                            <img src="photo/ık/WhatsApp Image 2026-02-25 at 16.57.26.jpeg" alt="Oyun Arayüzü"
+                                class="w-full h-full object-contain rounded-xl group-hover:scale-[1.01] transition-transform duration-700">
+                        </div>
+                        <div
+                            class="glass p-3 rounded-2xl group border-white/5 hover:border-emerald-500/30 transition-all flex items-center justify-center bg-black/40 flex-1 min-h-0">
+                            <img src="photo/ık/a.jpeg" alt="Kod Mantığı"
+                                class="w-full h-full object-contain rounded-xl group-hover:scale-[1.01] transition-transform duration-700">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 12: Melek -->
+        <section class="slide" data-index="12">
+            <div class="max-w-7xl mx-auto h-full flex flex-col justify-center py-6">
+                <!-- Top: Profile and Quote -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-10 mb-8">
+                    <div class="flex items-center gap-6">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-2xl font-bold shadow-lg shadow-pink-500/20">
+                            M</div>
+                        <div>
+                            <h2 class="text-4xl font-extrabold uppercase tracking-tight leading-none mb-1">Melek Gökçe
+                            </h2>
+                            <p class="text-pink-400 font-semibold text-sm">3D Artist & Blender Specialist</p>
+                        </div>
+                    </div>
+
+                    <div class="glass flex-1 max-w-3xl p-5 bg-white/[0.02]">
+                        <p class="text-lg text-gray-300 leading-relaxed italic">"Yapay zekâ render süresini kısaltan
+                            güçlü bir motor, ancak eserin ruhu sanatçının elindedir."</p>
+                    </div>
+                </div>
+
+                <!-- Bottom: Adaptive Gallery Grid -->
+                <div class="grid grid-cols-2 gap-6 flex-1 min-h-0">
+                    <!-- Image 1 -->
+                    <div
+                        class="glass p-3 rounded-2xl group border-white/5 hover:border-pink-500/30 transition-all flex items-center justify-center overflow-hidden relative bg-black/20">
+                        <img src="photo/melek/Resim1.png" alt="Konsept Tasarım"
+                            class="max-w-full max-h-full object-contain group-hover:scale-[1.02] transition-transform duration-700">
+                        <div
+                            class="absolute bottom-3 right-4 text-[9px] font-mono text-pink-400/40 uppercase tracking-widest">
+                            Konsept & Fikir</div>
+                    </div>
+                    <!-- Image 2 -->
+                    <div
+                        class="glass p-3 rounded-2xl group border-white/5 hover:border-pink-500/30 transition-all flex items-center justify-center overflow-hidden relative bg-black/20">
+                        <img src="photo/melek/Resim2.png" alt="Doku"
+                            class="max-w-full max-h-full object-contain group-hover:scale-[1.02] transition-transform duration-700">
+                        <div
+                            class="absolute bottom-3 right-4 text-[9px] font-mono text-pink-400/40 uppercase tracking-widest">
+                            Doku & Materyal</div>
+                    </div>
+                    <!-- Image 3 -->
+                    <div
+                        class="glass p-3 rounded-2xl group border-white/5 hover:border-pink-500/30 transition-all flex items-center justify-center overflow-hidden relative bg-black/20">
+                        <img src="photo/melek/Resim3.png" alt="Modelleme"
+                            class="max-w-full max-h-full object-contain group-hover:scale-[1.02] transition-transform duration-700">
+                        <div
+                            class="absolute bottom-3 right-4 text-[9px] font-mono text-pink-400/40 uppercase tracking-widest">
+                            Modelleme Süreci</div>
+                    </div>
+                    <!-- Image 4 -->
+                    <div
+                        class="glass p-3 rounded-2xl group border-white/5 hover:border-pink-500/30 transition-all flex items-center justify-center overflow-hidden relative bg-black/20">
+                        <img src="photo/melek/Resim4.png" alt="Final Render"
+                            class="max-w-full max-h-full object-contain group-hover:scale-[1.02] transition-transform duration-700">
+                        <div
+                            class="absolute bottom-3 right-4 text-[9px] font-mono text-pink-400/40 uppercase tracking-widest">
+                            Final Render</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 13: Ulaş Arda -->
+        <section class="slide" data-index="13">
+            <div class="max-w-7xl mx-auto h-full flex flex-col justify-center py-6">
+                <!-- Top Section: Name and Story -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-10 mb-8">
+                    <div class="flex items-center gap-6">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 via-indigo-600 to-red-500 flex items-center justify-center text-2xl font-bold shadow-lg shadow-indigo-500/20">
+                            UA</div>
+                        <div>
+                            <h2 class="text-4xl font-extrabold uppercase tracking-tight leading-none mb-1">Ulaş Arda
+                                Köylü</h2>
+                            <p class="text-indigo-400 font-semibold text-sm">Full Stack Developer</p>
+                        </div>
+                    </div>
+
+                    <div class="glass flex-1 max-w-3xl p-5 bg-white/[0.02]">
+                        <p class="text-lg text-gray-300 leading-relaxed italic">
+                            "<b>DükkanBulut</b> projemde PDF çıktısı için AI desteğiyle en uygun kütüphaneyi bulup
+                            sisteme hızla entegre ettim."
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Bottom Section: Split Gallery (Arda) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 flex-1 min-h-0">
+                    <!-- Left: Stacked Images -->
+                    <div class="grid grid-rows-2 gap-6">
+
+                        <div
+                            class="glass p-3 rounded-2xl group border-white/5 hover:border-red-500/30 transition-all flex items-center justify-center overflow-hidden bg-black/20">
+                            <img src="photo/arda/dsa.jpeg" alt="Development"
+                                class="max-w-full max-h-full object-contain group-hover:scale-[1.02] transition-transform duration-700">
+                        </div>
+                        <div
+                            class="glass p-3 rounded-2xl group border-white/5 hover:border-indigo-500/30 transition-all flex items-center justify-center overflow-hidden bg-black/20">
+                            <img src="photo/arda/WhatsApp Image 2026-02-25 at 11.45.26.jpeg" alt="DükkanBulut UI"
+                                class="max-w-full max-h-full object-contain group-hover:scale-[1.02] transition-transform duration-700">
+                        </div>
+                    </div>
+
+                    <!-- Right: Main PDF Image -->
+                    <div
+                        class="glass p-4 rounded-3xl group border-white/5 hover:border-blue-500/30 transition-all flex items-center justify-center overflow-hidden bg-black/20">
+                        <img src="photo/arda/22.jpeg" alt="PDF Output"
+                            class="max-w-full max-h-full object-contain group-hover:scale-[1.01] transition-transform duration-700">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 14: Mustafa -->
+        <section class="slide" data-index="14">
+            <div class="max-w-7xl mx-auto h-full flex flex-col justify-center py-6">
+                <!-- Top Section: Name and Project Title -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-10 mb-8">
+                    <div class="flex items-center gap-6">
+                        <div
+                            class="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-700 flex items-center justify-center text-2xl font-bold shadow-lg shadow-violet-500/20">
+                            M</div>
+                        <div>
+                            <h2 class="text-4xl font-extrabold uppercase tracking-tight leading-none mb-1">Mustafa İnan
+                            </h2>
+                            <p class="text-violet-400 font-semibold text-sm">Mobil Developer</p>
+                        </div>
+                    </div>
+
+                    <div class="glass flex-1 max-w-3xl p-5 bg-white/[0.02] shadow-xl shadow-violet-500/5">
+                        <div class="badge text-violet-400 mb-1 tracking-[0.2em]">PROJECT SHOWCASE</div>
+                        <h3 class="text-3xl font-black text-white uppercase tracking-tighter">Ünivexplore</h3>
+                        <p class="text-sm text-gray-400 italic">Üniversite ve Gelecek Yolculuğuna Dair Her Şey</p>
+                    </div>
+                </div>
+
+                <!-- Bottom Section: Content & Visual -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 flex-1 min-h-0">
+                    <!-- Text Content -->
+                    <div class="flex flex-col gap-4">
+                        <div class="bg-gray-950/90 p-8 rounded-3xl border border-white/10 shadow-2xl">
+                            <h4 class="text-violet-400 font-bold uppercase text-xs tracking-widest mb-4">Yapay Zekâyı
+                                Nasıl Konumlandırdık?</h4>
+                            <div class="space-y-4">
+                                <p class="text-gray-300 leading-relaxed text-[13px] italic pl-4">
+                                    "Yapay zekâyı bir karar verici değil; karmaşık kişilik analizlerini akademik
+                                    bölümlerle birleştiren ve yaratıcı fikirlerimizi somutlaştıran akıllı bir <b>'proje
+                                        ortağı'</b> olarak kullandık."
+                                </p>
+                                <p class="text-gray-300 leading-relaxed text-[13px] italic pl-4">
+                                    "Logo tasarımından kod yazımına kadar her aşamada, teknik sınırları hızla aşmamızı
+                                    sağlayan dijital bir asistanla çalışarak hayalimizdeki uygulamayı gerçeğe
+                                    dönüştürdük."
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Summary Box -->
+                        <div class="bg-violet-500/10 p-5 rounded-2xl border border-violet-500/20">
+                            <p class="text-xs text-violet-300 font-medium">
+                                <span class="block text-violet-400 font-bold mb-1">Fikirden Koda, Tasarımdan
+                                    Geleceğe:</span>
+                                Yapay Zekâ ile Proje Geliştirme Sürecinin Başarılı Bir Simülasyonu.
+                            </p>
+                        </div>
+
+                        <!-- Big Logo Section -->
+                        <div class="flex-1 flex items-center justify-center py-4">
+                            <div
+                                class="glass w-64 h-64 p-6 rounded-[3rem] bg-white border border-white/20 shadow-2xl shadow-violet-500/20 group hover:rotate-2 transition-transform duration-700">
+                                <img src="photo/logo.gif" alt="Logo"
+                                    class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Section: Previous Size / Contained -->
+                    <div class="flex items-center justify-center h-full p-4">
+                        <div
+                            class="glass p-3 rounded-3xl group border-white/5 hover:border-violet-500/30 transition-all flex items-center justify-center bg-black/40 max-h-[550px] aspect-[9/16] relative overflow-hidden shadow-2xl shadow-violet-500/10">
+                            <img src="photo/Uygulama.gif" alt="Ünivexplore Uygulama"
+                                class="w-full h-full object-contain group-hover:scale-[1.01] transition-transform duration-700 rounded-xl">
+                            <div
+                                class="absolute bottom-4 right-6 text-[9px] font-mono text-violet-400/50 uppercase tracking-widest">
+                                APP PREVIEW</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Slide 15: Technical Ecosystem -->
+        <section class="slide" data-index="15">
+            <div class="max-w-6xl mx-auto h-full flex flex-col justify-center">
+                <div class="flex justify-between items-end mb-12">
+                    <div>
+                        <div class="badge text-purple-400 mb-2">Systems Online</div>
+                        <h2 class="text-5xl font-extrabold tracking-tight uppercase">Teknoloji Ekosistemi</h2>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-4 gap-8">
+                    <!-- Gemini -->
+                    <div class="glass p-8 group hover:bg-white/[0.05] transition-all border-blue-500/10"
+                        style="--glow-color: rgba(59, 130, 246, 0.2);">
+                        <div class="image-container">
+                            <img src="photo/gm.webp" alt="Gemini" class="tool-icon">
+                            <div
+                                class="absolute top-3 right-3 status-dot bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]">
+                            </div>
+                        </div>
+                        <div class="tool-card-content">
+                            <h3 class="text-2xl font-bold mb-3">Gemini 1.5</h3>
+                            <p class="text-sm text-gray-400 leading-relaxed">Derin araştırma, karmaşık mantık çözme
+                                ve
+                                teknik dokümantasyon motoru.</p>
+                        </div>
+                    </div>
+
+                    <!-- V0 -->
+                    <div class="glass p-8 group hover:bg-white/[0.05] transition-all border-purple-500/10"
+                        style="--glow-color: rgba(168, 85, 247, 0.2);">
+                        <div class="image-container">
+                            <img src="photo/stc.jpg" alt="V0" class="tool-icon">
+                            <div
+                                class="absolute top-3 right-3 status-dot bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]">
+                            </div>
+                        </div>
+                        <div class="tool-card-content">
+                            <h3 class="text-2xl font-bold mb-3">V0 / Stitch</h3>
+                            <p class="text-sm text-gray-400 leading-relaxed">Prompt ile modern UI bileşenleri
+                                tasarlama
+                                ve hızlı frontend mimarisi.</p>
+                        </div>
+                    </div>
+
+                    <!-- Antigravity -->
+                    <div class="glass p-8 group hover:bg-white/[0.05] transition-all border-cyan-500/10"
+                        style="--glow-color: rgba(6, 182, 212, 0.2);">
+                        <div class="image-container">
+                            <img src="photo/download.png" alt="Antigravity" class="tool-icon">
+                            <div
+                                class="absolute top-3 right-3 status-dot bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]">
+                            </div>
+                        </div>
+                        <div class="tool-card-content">
+                            <h3 class="text-2xl font-bold mb-3 text-cyan-400">Antigravity</h3>
+                            <p class="text-sm text-gray-300 leading-relaxed">Ekosistemin en zeki otonom kod
+                                geliştirme
+                                ve proje yönetim ajanı.</p>
+                        </div>
+                    </div>
+
+                    <!-- Cursor -->
+                    <div class="glass p-8 group hover:bg-white/[0.05] transition-all border-gray-500/10"
+                        style="--glow-color: rgba(255, 255, 255, 0.1);">
+                        <div class="image-container">
+                            <img src="photo/cursor.jpg" alt="Cursor" class="tool-icon">
+                            <div class="absolute top-3 right-3 status-dot bg-gray-400"></div>
+                        </div>
+                        <div class="tool-card-content">
+                            <h3 class="text-2xl font-bold mb-3">Cursor</h3>
+                            <p class="text-sm text-gray-400 leading-relaxed">AI ile entegre kod yazma, anlık hata
+                                ayıklama ve akıllı navigasyon editörü.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 16: Otopilot: Tanım ve Riskler -->
+        <section class="slide" data-index="16">
+            <div class="max-w-6xl mx-auto h-full flex flex-col justify-center">
+                <div class="mb-10 text-center">
+                    <h2 class="text-5xl font-extrabold text-gradient uppercase tracking-tight">Otopilot: Güç ve Denetim
+                    </h2>
+                    <p class="text-gray-400 mt-2">Yapay zekânın yazılım dünyasındaki rolünü anlamak ve risklerini
+                        yönetmek.</p>
+                </div>
+
+                <div class="grid md:grid-cols-5 gap-8 items-stretch">
+                    <!-- Left: Otopilot Nedir? -->
+                    <div
+                        class="md:col-span-2 glass p-8 flex flex-col justify-center border-cyan-500/10 bg-black/40 h-full">
+                        <div class="badge text-cyan-400 mb-6 w-fit">Otopilot Nedir?</div>
+                        <div class="space-y-6">
+                            <p class="text-gray-300 leading-relaxed text-lg">
+                                <span class="text-white font-bold">Otopilot</span>, geliştiricinin talimatlarını
+                                kullanarak kod üretimini, test süreçlerini ve mimari kurguyu <span
+                                    class="text-cyan-400 font-bold">otomatik olarak</span> gerçekleştiren yapay zekâ
+                                asistanıdır.
+                            </p>
+                            <div
+                                class="bg-cyan-500/5 p-4 rounded-xl border border-cyan-500/20 italic text-xs text-cyan-300">
+                                "Sektörü hızlandırır, tekrarlı işleri yok eder; ancak her zaman bir 'Pilot' denetimine
+                                ihtiyaç duyar."
+                            </div>
+                            <div class="grid grid-cols-2 gap-3 mt-6">
+                                <div
+                                    class="glass p-4 text-center border-white/5 hover:border-cyan-500/30 transition-all">
+                                    <div class="text-3xl mb-1">⚡</div>
+                                    <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Yüksek
+                                        Hız</div>
+                                </div>
+                                <div
+                                    class="glass p-4 text-center border-white/5 hover:border-cyan-500/30 transition-all">
+                                    <div class="text-3xl mb-1">🤖</div>
+                                    <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Otomasyon
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Neden Tehlikelidir? -->
+                    <div
+                        class="md:col-span-3 glass p-6 relative overflow-hidden group border-red-500/10 bg-red-500/5 h-full">
+                        <div class="flex justify-between items-center mb-6 border-b border-red-500/10 pb-4">
+                            <div class="flex items-center gap-2">
+                                <div class="status-dot bg-red-500 animate-pulse"></div>
+                                <span class="text-xs font-mono text-red-400 uppercase tracking-widest">Neden
+                                    Tehlikelidir?</span>
+                            </div>
+                            <span class="text-[10px] font-mono text-gray-500 uppercase">Kör Güven Riski</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h3 class="text-2xl font-bold text-red-400/90 tracking-tighter">Sektörel Yanılsama</h3>
+                            <p class="text-gray-300 leading-relaxed text-sm">
+                                AI çıktısını sorgulamadan sisteme dahil etmek, temeli olmayan bir bina inşa etmek
+                                gibidir. Hızlı koda duyulan <span class="font-bold text-red-400">"Sorgusuz Güven"</span>
+                                en büyük teknik borçtur.
+                            </p>
+
+                            <!-- Log Visual Remains for Premium Feel -->
+                            <div class="code-block relative group/code bg-black/80 border border-red-500/10 mt-4">
+                                <div class="text-xs md:text-sm space-y-1 font-mono">
+                                    <div class="text-gray-500">// Otopilotun Ürettiği Gizli Hata:</div>
+                                    <div class="text-red-400/80">ERROR: SECURITY_GATE_BYPASSED [P0]</div>
+                                    <div class="text-red-400/60">> Hardcoded authentication bypass found in AI logic.
+                                    </div>
+                                    <div class="h-4"></div>
+                                    <div class="text-cyan-400 flex items-center gap-2 border-t border-white/5 pt-2">
+                                        <span class="text-lg">🎯</span>
+                                        <div class="flex flex-col">
+                                            <span
+                                                class="font-bold text-[10px] uppercase tracking-wider text-cyan-400">Pilot
+                                                Müdahalesi</span>
+                                            <span class="text-[9px] text-gray-400">"Güvenlik açığı Pilot tarafından
+                                                tespit edildi."</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Risks summary icons -->
+                            <div class="grid grid-cols-3 gap-4 mt-8">
+                                <div class="text-center group-hover:-translate-y-1 transition-transform">
+                                    <div class="text-2xl mb-1">⚠️</div>
+                                    <div class="text-[9px] text-gray-500 font-bold uppercase tracking-tighter">
+                                        Halüsinasyon</div>
+                                </div>
+                                <div class="text-center group-hover:-translate-y-1 transition-transform">
+                                    <div class="text-2xl mb-1">🔓</div>
+                                    <div class="text-[9px] text-gray-500 font-bold uppercase tracking-tighter">Zafiyet
+                                    </div>
+                                </div>
+                                <div class="text-center group-hover:-translate-y-1 transition-transform">
+                                    <div class="text-2xl mb-1">📉</div>
+                                    <div class="text-[9px] text-gray-500 font-bold uppercase tracking-tighter">
+                                        Mühendislik Körelmesi</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 17: Uygulama 02 - Canlı Proje Akışı -->
+        <section class="slide" data-index="17">
+            <div class="max-w-7xl mx-auto h-full flex flex-col justify-center py-6">
+                <div class="text-center mb-12">
+                    <div class="badge text-emerald-400 mb-4 px-6 py-2">Uygulama 02</div>
+                    <h2 class="text-6xl font-black mb-4 text-gradient uppercase tracking-tighter">Fikri Ürüne
+                        Dönüştürmek</h2>
+                    <p class="text-gray-400 text-lg">Gemini'den koda, koddan canlı yayına tam entegrasyon.</p>
+                </div>
+
+                <div class="grid md:grid-cols-4 gap-6 items-stretch">
+                    <!-- Step 1 -->
+                    <div class="glass p-6 border-blue-500/20 hover:bg-white/[0.05] transition-all flex flex-col">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-blue-500/20 flex items-center justify-center text-2xl mb-6">
+                            1</div>
+                        <h4 class="font-bold text-blue-400 uppercase tracking-widest text-xs mb-3">Fikir & Prompt</h4>
+                        <div class="bg-black/40 p-4 rounded-xl border border-white/5 mb-4 flex-1">
+                            <p class="text-xs text-gray-300 leading-relaxed italic">
+                                "Gemini ile modern bir konu belirle ve onun için detaylı bir web sitesi promptu
+                                oluştur."
+                            </p>
+                        </div>
+                        <div class="text-[10px] text-gray-500 font-mono">Tool: Gemini 1.5</div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="glass p-6 border-purple-500/20 hover:bg-white/[0.05] transition-all flex flex-col">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-purple-500/20 flex items-center justify-center text-2xl mb-6">
+                            2</div>
+                        <h4 class="font-bold text-purple-400 uppercase tracking-widest text-xs mb-3">Tasarım (UI/UX)
+                        </h4>
+                        <div class="bg-black/40 p-4 rounded-xl border border-white/5 mb-4 flex-1">
+                            <p class="text-xs text-gray-300 leading-relaxed italic">
+                                "Oluşan promptu Stitch uygulamasına yapıştır ve profesyonel arayüzü tek adımda üret."
+                            </p>
+                        </div>
+                        <div class="text-[10px] text-gray-500 font-mono">Tool: Stitch / v0</div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="glass p-6 border-cyan-500/20 hover:bg-white/[0.05] transition-all flex flex-col">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-cyan-500/20 flex items-center justify-center text-2xl mb-6">
+                            3</div>
+                        <h4 class="font-bold text-cyan-400 uppercase tracking-widest text-xs mb-3">Kod Entegrasyonu</h4>
+                        <div class="bg-black/40 p-4 rounded-xl border border-white/5 mb-4 flex-1">
+                            <p class="text-xs text-gray-300 leading-relaxed italic">
+                                "HTML kodunu kopyala, yerel dosyana aktar ve sistemi hazırla."
+                            </p>
+                        </div>
+                        <div class="text-[10px] text-gray-500 font-mono">Tool: Antigravity / Cursor</div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div
+                        class="glass p-6 border-emerald-500/20 hover:bg-white/[0.05] transition-all flex flex-col relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-16 h-16 bg-emerald-500/10 blur-2xl"></div>
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center text-2xl mb-6 animate-pulse text-emerald-400">
+                            4</div>
+                        <h4 class="font-bold text-emerald-400 uppercase tracking-widest text-xs mb-3">Canlı Yayına Al
+                        </h4>
+                        <div class="bg-black/40 p-4 rounded-xl border border-white/5 mb-4 flex-1">
+                            <p class="text-xs text-gray-300 leading-relaxed italic">
+                                "Web sitesini çalıştır, hatasız çalıştığını doğrula ve projeyi final haline getir."
+                            </p>
+                        </div>
+                        <div class="text-[10px] text-emerald-500 font-bold font-mono">Status: DEPLOY READY</div>
+                    </div>
+                </div>
+
+                <div class="mt-12 glass p-8 border-dashed border-white/20 text-center">
+                    <p class="text-xl text-gray-300 italic">
+                        "Yalnızca bir fikir değil; <span class="text-emerald-400 font-extrabold uppercase">gerçek bir
+                            üretim</span> sürecine tanıklık edeceksiniz."
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 18: Closure -->
+        <section class="slide" data-index="18">
+            <div class="flex-1 flex flex-col items-center justify-center text-center max-w-4xl mx-auto">
+                <!-- Logos Row -->
+                <div class="flex items-center justify-center gap-6 md:gap-12 mb-8">
+                    <div class="glass p-4 md:p-6 w-32 h-32 md:w-52 md:h-52 flex items-center justify-center floating"
+                        style="animation-delay: -1s;">
+                        <img src="photo/myo.png" alt="MYO Logo" class="max-w-full max-h-full object-contain">
+                    </div>
+                    <div class="glass p-4 md:p-6 w-32 h-32 md:w-52 md:h-52 flex items-center justify-center floating">
+                        <img src="photo/XRLAB.MCBU - 2.png" alt="XRLAB Logo"
+                            class="max-w-full max-h-full object-contain">
+                    </div>
+                </div>
+
+                <h2 class="text-4xl md:text-6xl font-extrabold mb-8 text-gradient">Teşekkürler!</h2>
+                <div class="glass p-12 w-full mb-12 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-8xl font-black">AI</div>
+                    <p class="text-2xl font-medium mb-6">Yapay zekânın sizi yönetmesine değil, sizin onu yönetmenize
+                        izin verin.</p>
+                    <p class="text-gray-400 leading-relaxed">Sektörü takip edin, temelleri (Algoritma, Veri Tabanı,
+                        Temiz Kod) öğrenmeye devam edin. Usta bir pilot her zaman kazanır.</p>
+                </div>
+                <div class="flex gap-4">
+                    <div class="px-6 py-2 glass text-sm font-bold">@xrlab.mcbu</div>
+                    <div class="px-6 py-2 glass text-sm font-bold">xrlab.mcbu.edu.tr</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let currentSlideIndex = 1;
+        const totalSlidesCount = 18;
+        const slides = document.querySelectorAll('.slide');
+        const currentSlideEl = document.getElementById('current-slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function updateSlide() {
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+                if (parseInt(slide.dataset.index) === currentSlideIndex) {
+                    slide.classList.add('active');
+                }
+            });
+
+            currentSlideEl.textContent = currentSlideIndex;
+
+            // Update buttons
+            prevBtn.classList.toggle('opacity-50', currentSlideIndex === 1);
+            prevBtn.classList.toggle('cursor-not-allowed', currentSlideIndex === 1);
+
+            if (currentSlideIndex === totalSlidesCount) {
+                nextBtn.textContent = 'Başa Dön ↻';
+                nextBtn.classList.replace('from-purple-600', 'from-amber-600');
+            } else {
+                nextBtn.textContent = 'İleri →';
+                nextBtn.classList.replace('from-amber-600', 'from-purple-600');
+            }
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentSlideIndex < totalSlidesCount) {
+                currentSlideIndex++;
+            } else {
+                currentSlideIndex = 1;
+            }
+            updateSlide();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentSlideIndex > 1) {
+                currentSlideIndex--;
+                updateSlide();
+            }
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextBtn.click();
+            } else if (e.key === 'ArrowLeft') {
+                prevBtn.click();
+            }
+        });
+
+        // Initialize
+        updateSlide();
+    </script>
+</body>
+
+</html>
